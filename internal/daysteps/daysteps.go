@@ -3,6 +3,7 @@ package daysteps
 import (
 	"errors"
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 	"time"
@@ -23,16 +24,16 @@ func parsePackage(data string) (int, time.Duration, error) {
 	parts := strings.Split(data, ",")
 
 	if len(parts) != 2 {
-		return 0, 0, fmt.Errorf("неверный формат строки")
+		return 0, 0, fmt.Errorf("")
 	}
 
 	steps, err := strconv.Atoi(parts[0])
 	if err != nil {
-		return 0, 0, fmt.Errorf("ошибка преобразования количества шагов")
+		return 0, 0, fmt.Errorf("")
 	}
 
 	if steps <= 0 {
-		return 0, 0, errors.New("количество шагов должно быть больше 0")
+		return 0, 0, errors.New("")
 	}
 
 	duration, err := time.ParseDuration(parts[1])
@@ -48,21 +49,23 @@ func parsePackage(data string) (int, time.Duration, error) {
 func DayActionInfo(data string, weight, height float64) string {
 
 	if weight <= 0 {
-		return fmt.Sprintf("Ошибка: вес должен быть больше 0")
+		log.Print("Неверный вес")
+		return ""
 	}
 	if height <= 0 {
-		return fmt.Sprintf("Ошибка: рост должен быть больше 0")
+		log.Print("Неверный рост")
+		return ""
 	}
 
-	// Проверка на пустую строку
 	if data == "" {
-		return fmt.Sprintf("Ошибка: входные данные не могут быть пустыми")
+		log.Print("Неверная длительность")
+		return ""
 	}
 
 	steps, duration, err := parsePackage(data)
 	if err != nil {
-
-		return fmt.Sprintf("Ошибка обработки данных: %v", err)
+		log.Print("Неверное время ")
+		return fmt.Sprintf("")
 	}
 
 	distanceMeters := float64(steps) * stepLength
@@ -70,7 +73,7 @@ func DayActionInfo(data string, weight, height float64) string {
 
 	calories, errCalories := spentcalories.WalkingSpentCalories(steps, weight, height, duration)
 	if errCalories != nil {
-		return fmt.Sprintf("Ошибка расчёта калорий: %v", errCalories)
+		return ""
 	}
 
 	result := fmt.Sprintf(
